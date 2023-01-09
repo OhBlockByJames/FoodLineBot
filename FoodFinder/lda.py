@@ -1,22 +1,36 @@
 import pandas as pd
 import numpy as np
 import pickle
-from collections import Counter
 from nltk.util import ngrams
 from gensim import corpora
-from gensim import models
-from gensim import similarities
 import os
+import re
 
 # read files
 path = os.path.abspath(os.getcwd())
 restaurant_df = pd.read_csv(
-    path + '/FoodFinder/static/restaurant_final_df.csv', index_col=[0])
-
+    path + '/FoodFinder/static/new_restaurant_final_df.csv', index_col=[0])
 comments = pickle.load(
     open(path+'/FoodFinder/static/comments_final', 'rb'))
 
 index = pickle.load(open(path+'/FoodFinder/static/similarity.pkl', 'rb'))
+
+
+def getWebsite(text):
+    restaurant_df["restaurant_name"] = restaurant_df["restaurant_name"].apply(
+        lambda x: matchLength(x))
+    search = restaurant_df.loc[restaurant_df['restaurant_name'] == text]
+    if len(search) == 0 or search["website"].isnull().any():
+        search = "沒有該餐廳網站"
+    else:
+        search = search["website"].values[0]
+    return search
+
+
+def matchLength(text):
+    result = re.sub(u"([^\u4e00-\u9fa5])", "", text
+                    ) if len(text) > 20 else text
+    return result
 
 
 def Recommend(selected_restaurant):

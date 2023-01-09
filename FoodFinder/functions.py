@@ -1,5 +1,5 @@
 from FoodFinder.models import HistoryResult
-from FoodFinder.lda import Recommend, preprocess_input, retrieve
+from FoodFinder.lda import Recommend, preprocess_input, retrieve, getWebsite
 from datetime import datetime
 from linebot.models import *
 from FoodFinder.models import HistoryResult
@@ -72,14 +72,17 @@ def SaveData(text):
     HistoryResult.objects.create(
         restaurant_name=text, date=date_time
     )
-    print("儲存成功")
+
+
+def getLink(text):
+    result = getWebsite(text)
+    return result
 
 
 def mostRecommend():
     # order_by('-total') = order by DESC
     result = HistoryResult.objects.all().values('restaurant_name').annotate(
         total=Count('restaurant_name')).order_by('-total')
-    print(result)
     return result[0].get('restaurant_name') if len(result) > 0 else "沒有推薦結果"
 
 

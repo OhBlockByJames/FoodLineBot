@@ -80,9 +80,10 @@ def callback(request):
                     elif "您的推薦結果:" in input:
                         insert = input.replace("您的推薦結果: ", "")
                         SaveData(insert)
+                        msg = getLink(insert)
                         line_bot_api.reply_message(  # 回復傳入的訊息文字
                             event.reply_token,
-                            TextSendMessage(text="感謝您的使用")
+                            TextSendMessage(text=msg)
                         )
                 elif event.message.type == "sticker":  # 傳貼圖
                     reply_arr = []
