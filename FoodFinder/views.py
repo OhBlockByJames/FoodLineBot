@@ -34,42 +34,14 @@ def callback(request):
                     if "[推薦]" in input:
                         input = input.replace("[推薦] ", "")
                         rank_result = rankingRestaurant(input)
-                        rank1 = rank_result[0] if len(
-                            rank_result) > 0 else '沒有與關鍵字類似的餐廳'
-                        rank2 = rank_result[1] if len(
-                            rank_result) > 1 else '沒有與關鍵字類似的餐廳'
-                        rank3 = rank_result[2] if len(
-                            rank_result) > 2 else '沒有與關鍵字類似的餐廳'
-                        rank4 = rank_result[3] if len(
-                            rank_result) > 3 else '沒有與關鍵字類似的餐廳'
+                        action_list = createPostTemplate(rank_result)
                         reply_arr.append(
                             TemplateSendMessage(
                                 alt_text='Buttons template',
                                 template=ButtonsTemplate(
                                     title='與關鍵字類似的餐廳',
                                     text='選擇您的餐廳偏好',
-                                    actions=[
-                                        PostbackTemplateAction(
-                                            label=rank1,
-                                            text=rank1,
-                                            data=rank1
-                                        ),
-                                        PostbackTemplateAction(
-                                            label=rank2,
-                                            text=rank2,
-                                            data=rank2
-                                        ),
-                                        PostbackTemplateAction(
-                                            label=rank3,
-                                            text=rank3,  # 按下後輸入的文字
-                                            data=rank3
-                                        ),
-                                        PostbackTemplateAction(
-                                            label=rank4,
-                                            text=rank4,  # 按下後輸入的文字
-                                            data=rank4
-                                        )
-                                    ]
+                                    actions=action_list
                                 )
                             )
                         )
@@ -91,28 +63,21 @@ def callback(request):
                                             text='請輸入您的關鍵字',
                                         ),
                                         MessageTemplateAction(
-                                            label='我都可以',
-                                            text='我都可以',
+                                            label='隨便！都可以！',
+                                            text='隨便！都可以！',
                                         ),
                                     ]
                                 )
                             )
                         )
-                    elif "我都可以" in input:
-                        print('我都可以')
-                    elif "您的推薦結果: 沒有類似主題的餐廳" in input:
-                        reply_arr = []
-                        reply_arr.append(TextSendMessage(
-                            text="無法推薦餐廳給您 我們深感遺憾..."))
-                        reply_arr.append(StickerSendMessage(
-                            package_id=11539, sticker_id=52114110))
+                    elif "隨便！都可以！" in input:
+                        result = mostRecommend()
                         line_bot_api.reply_message(  # 回復傳入的訊息文字
                             event.reply_token,
-                            reply_arr
+                            TextSendMessage(text="您的推薦結果: "+result)
                         )
                     elif "您的推薦結果:" in input:
                         insert = input.replace("您的推薦結果: ", "")
-                        print(insert)
                         SaveData(insert)
                         line_bot_api.reply_message(  # 回復傳入的訊息文字
                             event.reply_token,
@@ -134,15 +99,7 @@ def callback(request):
                 if event.postback.data != '沒有與關鍵字類似的餐廳':
                     selected = event.postback.data
                     recommend_result = recommendRestaurant(selected)
-                    print(recommend_result)
-                    rec1 = recommend_result[0] if len(
-                        recommend_result) > 0 else selected
-                    rec2 = recommend_result[1] if len(
-                        recommend_result) > 1 else '沒有類似主題的餐廳'
-                    rec3 = recommend_result[2] if len(
-                        recommend_result) > 2 else '沒有類似主題的餐廳'
-                    rec4 = recommend_result[3] if len(
-                        recommend_result) > 3 else '沒有類似主題的餐廳'
+                    action_list = createTemplate(selected, recommend_result)
                     line_bot_api.reply_message(
                         event.reply_token,
                         TemplateSendMessage(
@@ -150,24 +107,7 @@ def callback(request):
                             template=ButtonsTemplate(
                                 title='Menu',
                                 text='請選擇美食類別',
-                                actions=[
-                                    MessageTemplateAction(
-                                        label=rec1,
-                                        text="您的推薦結果: "+rec1,
-                                    ),
-                                    MessageTemplateAction(
-                                        label=rec2,
-                                        text="您的推薦結果: "+rec2,
-                                    ),
-                                    MessageTemplateAction(
-                                        label=rec3,
-                                        text="您的推薦結果: "+rec3,
-                                    ),
-                                    MessageTemplateAction(
-                                        label=rec4,
-                                        text="您的推薦結果: "+rec4,
-                                    ),
-                                ]
+                                actions=action_list
                             )
                         )
                     )
