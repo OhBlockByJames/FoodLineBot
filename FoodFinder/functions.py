@@ -4,7 +4,7 @@ from datetime import datetime
 from linebot.models import *
 from FoodFinder.models import HistoryResult
 from django.db.models import Count
-
+import re
 # 回傳與關鍵字相似的餐廳
 
 
@@ -14,17 +14,25 @@ def createPostTemplate(rank_result):
         action_list.append(PostbackTemplateAction(
             label='沒有與關鍵字類似的餐廳', text='沒有與關鍵字類似的餐廳', data='沒有與關鍵字類似的餐廳'))
     if (len(rank_result) > 0):
+        rank1 = re.sub(u"([^\u4e00-\u9fa5])", "", rank_result[0]
+                       ) if len(rank_result[0]) > 20 else rank_result[0]
         action_list.append(PostbackTemplateAction(
-            label=rank_result[0], text=rank_result[0], data=rank_result[0]))
+            label=rank1, text=rank1, data=rank1))
     if (len(rank_result) > 1):
+        rank2 = re.sub(u"([^\u4e00-\u9fa5])", "", rank_result[1]
+                       ) if len(rank_result[1]) > 20 else rank_result[1]
         action_list.append(PostbackTemplateAction(
-            label=rank_result[1], text=rank_result[1], data=rank_result[1]))
+            label=rank2, text=rank2, data=rank2))
     if (len(rank_result) > 2):
+        rank3 = re.sub(u"([^\u4e00-\u9fa5])", "", rank_result[2]
+                       ) if len(rank_result[2]) > 20 else rank_result[2]
         action_list.append(PostbackTemplateAction(
-            label=rank_result[2], text=rank_result[2], data=rank_result[2]))
+            label=rank3, text=rank3, data=rank3))
     if (len(rank_result) > 3):
+        rank4 = re.sub(u"([^\u4e00-\u9fa5])", "", rank_result[3]
+                       ) if len(rank_result[3]) > 20 else rank_result[3]
         action_list.append(PostbackTemplateAction(
-            label=rank_result[3], text=rank_result[3], data=rank_result[3]))
+            label=rank4, text=rank4, data=rank4))
     return action_list
 
 # 回傳類似主題餐廳
@@ -36,17 +44,25 @@ def createTemplate(selected, recommend_result):
         action_list.append(MessageTemplateAction(
             label=selected, text="您的推薦結果: "+selected, data=selected))
     if (len(recommend_result) > 0):
+        rec1 = re.sub(u"([^\u4e00-\u9fa5])", "", recommend_result[0]
+                      ) if len(recommend_result[0]) > 20 else recommend_result[0]
         action_list.append(MessageTemplateAction(
-            label=recommend_result[0], text="您的推薦結果: "+recommend_result[0], data=recommend_result[0]))
+            label=rec1, text="您的推薦結果: "+rec1, data=rec1))
     if (len(recommend_result) > 1):
+        rec2 = re.sub(u"([^\u4e00-\u9fa5])", "", recommend_result[1]
+                      ) if len(recommend_result[1]) > 20 else recommend_result[1]
         action_list.append(MessageTemplateAction(
-            label=recommend_result[1], text="您的推薦結果: "+recommend_result[1], data=recommend_result[1]))
+            label=rec2, text="您的推薦結果: "+rec2, data=rec2))
     if (len(recommend_result) > 2):
+        rec3 = re.sub(u"([^\u4e00-\u9fa5])", "", recommend_result[2]
+                      ) if len(recommend_result[2]) > 20 else recommend_result[2]
         action_list.append(MessageTemplateAction(
-            label=recommend_result[2], text="您的推薦結果: "+recommend_result[2], data=recommend_result[2]))
+            label=rec3, text="您的推薦結果: "+rec3, data=rec3))
     if (len(recommend_result) > 3):
+        rec4 = re.sub(u"([^\u4e00-\u9fa5])", "", recommend_result[3]
+                      ) if len(recommend_result[3]) > 20 else recommend_result[3]
         action_list.append(MessageTemplateAction(
-            label=recommend_result[3], text="您的推薦結果: "+recommend_result[3], data=recommend_result[3]))
+            label=rec4, text="您的推薦結果: "+rec4, data=rec4))
     return action_list
 
 
@@ -75,4 +91,5 @@ def rankingRestaurant(keyword):
 
 def recommendRestaurant(selected_restaurant):
     recommended_restaurants = Recommend(selected_restaurant)
+    print(recommended_restaurants)
     return recommended_restaurants

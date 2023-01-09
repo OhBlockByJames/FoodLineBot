@@ -31,8 +31,9 @@ def callback(request):
                 if event.message.type == "text":
                     input = event.message.text
                     reply_arr = []
-                    if "[推薦]" in input:
-                        input = input.replace("[推薦] ", "")
+                    if "keywords" in input:
+                        input = input.replace("keywords", "")
+                        input = input.strip()
                         rank_result = rankingRestaurant(input)
                         action_list = createPostTemplate(rank_result)
                         reply_arr.append(
@@ -56,21 +57,21 @@ def callback(request):
                                 alt_text='Buttons template',
                                 template=ButtonsTemplate(
                                     title='歡迎使用',
-                                    text='輸入格式範例 \n [推薦] 叉燒 日式 拉麵 柑橘',
+                                    text='輸入格式範例 \n keywords 叉燒 日式 拉麵 柑橘',
                                     actions=[
                                         MessageTemplateAction(
                                             label='開始使用',
                                             text='請輸入您的關鍵字',
                                         ),
                                         MessageTemplateAction(
-                                            label='隨便！都可以！',
-                                            text='隨便！都可以！',
+                                            label='隨便~都可以~',
+                                            text='隨便~都可以~',
                                         ),
                                     ]
                                 )
                             )
                         )
-                    elif "隨便！都可以！" in input:
+                    elif "隨便~都可以~" in input:
                         result = mostRecommend()
                         line_bot_api.reply_message(  # 回復傳入的訊息文字
                             event.reply_token,
@@ -81,7 +82,7 @@ def callback(request):
                         SaveData(insert)
                         line_bot_api.reply_message(  # 回復傳入的訊息文字
                             event.reply_token,
-                            TextSendMessage(text="感謝您的使用!!!")
+                            TextSendMessage(text="感謝您的使用")
                         )
                 elif event.message.type == "sticker":  # 傳貼圖
                     reply_arr = []
