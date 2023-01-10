@@ -9,7 +9,7 @@ import re
 # read files
 path = os.path.abspath(os.getcwd())
 restaurant_df = pd.read_csv(
-    path + '/FoodFinder/static/new_restaurant_final_df.csv', index_col=[0])
+    path + '/FoodFinder/static/restaurant_final_df.csv', index_col=[0])
 comments = pickle.load(
     open(path+'/FoodFinder/static/comments_final', 'rb'))
 
@@ -21,7 +21,7 @@ def getWebsite(text):
         lambda x: matchLength(x))
     search = restaurant_df.loc[restaurant_df['restaurant_name'] == text]
     if len(search) == 0 or search["website"].isnull().any():
-        search = "沒有該餐廳網站"
+        search = "感謝您的使用!!!"
     else:
         search = search["website"].values[0]
     return search

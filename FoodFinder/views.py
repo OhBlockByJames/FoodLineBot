@@ -72,10 +72,16 @@ def callback(request):
                             )
                         )
                     elif "隨便~都可以~" in input:
+                        reply_arr = []
                         result = mostRecommend()
+                        msg = getLink(result)
+                        reply_arr.append(TextSendMessage(
+                            text="您的推薦結果: "+result))
+                        reply_arr.append(TextSendMessage(
+                            text=msg))
                         line_bot_api.reply_message(  # 回復傳入的訊息文字
                             event.reply_token,
-                            TextSendMessage(text="您的推薦結果: "+result)
+                            reply_arr
                         )
                     elif "您的推薦結果:" in input:
                         insert = input.replace("您的推薦結果: ", "")
@@ -96,7 +102,7 @@ def callback(request):
                     )
                 else:  # 其他
                     line_bot_api.reply_message(
-                        event.reply_token, ImageSendMessage(original_content_url='https://i.imgur.com/34MoctZ.jpg', preview_image_url='https://i.imgur.com/34MoctZ.jpg'))  # 原圖/縮圖
+                        event.reply_token, ImageSendMessage(original_content_url='https://api.jikipedia.com/upload/2524fa82bf0c30887ae202d45bb90356_scaled.jpg', preview_image_url='https://api.jikipedia.com/upload/2524fa82bf0c30887ae202d45bb90356_scaled.jpg'))  # 原圖/縮圖
             elif isinstance(event, PostbackEvent):  # 如果有回傳值事件
                 if event.postback.data != '沒有與關鍵字類似的餐廳':
                     selected = event.postback.data
@@ -107,8 +113,8 @@ def callback(request):
                         TemplateSendMessage(
                             alt_text='Buttons template',
                             template=ButtonsTemplate(
-                                title='Menu',
-                                text='請選擇美食類別',
+                                title='餐廳推薦結果',
+                                text='請選擇您的推薦結果',
                                 actions=action_list
                             )
                         )
